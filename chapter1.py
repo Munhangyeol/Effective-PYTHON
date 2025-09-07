@@ -93,6 +93,15 @@ for suba in a:
         b.extend(subaa)
 print(b)
 
+# 리스트 컴프리헨션은 입력값이 매우 많은 경우에 메모리가 터질 위험이 있으므로, 제너레이터를 이용해서
+# iter로 동적으로 메모리를 생성하면 해당 문제를 해결할 수 있음.
+numsCom = [x for x in range(10**8)]
+numsGen = (x for x in range(10**8))
+print(next(numsGen))  # 0 --> 이 때마다 동적으로 생성된다.
+print(next(numsGen))  # 1
+print(next(numsGen))  # 2
 
-
-
+# 리스트를 순회하면서 현재의 위치,value를 알고 싶다면 enumerate로 감싸서 사용하자
+a = [1, 2, 3, 4, 5]
+for idx,value in enumerate(a):
+    print('%d %d' %(idx,value))
