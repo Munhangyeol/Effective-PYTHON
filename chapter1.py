@@ -1,6 +1,7 @@
 # 파이썬 다운 생각
 import this
 
+
 # PEP를 따라가자.
 # 클래스는 두 줄을 띄운다.
 class A:
@@ -76,18 +77,18 @@ print(q[::2])
 # map과 filter를 이용해서 새로운 리스트를 만들기 보다는 리스트 컴프리헨션을 사용해야함
 # 리스트에서 짝수인 수-> 제곱수를 새로 생성하는 예제
 a = [1, 2, 3, 4]
-b = [x*x for x in a if x % 2 == 0]
+b = [x * x for x in a if x % 2 == 0]
 print(b)
 
 # 리스트 컴프리헨션의 표현식을 두개를 초과하지 말자.
 # 다중식에서의 리스트 컴프리헨션은 왼쪽->오른쪽으로 구성됨.
 a = [[1, 2, 3, 4, 5]]
-b = [x*2 for c in a for x in c]
+b = [x * 2 for c in a for x in c]
 print(b)
 
 a = [[[1, 2, 3, 4, 5]]]
-b = [x*2 for c in a for w in c for x in w] # 이렇게 쓰지 말라는 거
-b=[]
+b = [x * 2 for c in a for w in c for x in w]  # 이렇게 쓰지 말라는 거
+b = []
 for suba in a:
     for subaa in suba:
         b.extend(subaa)
@@ -95,13 +96,66 @@ print(b)
 
 # 리스트 컴프리헨션은 입력값이 매우 많은 경우에 메모리가 터질 위험이 있으므로, 제너레이터를 이용해서
 # iter로 동적으로 메모리를 생성하면 해당 문제를 해결할 수 있음.
-numsCom = [x for x in range(10**8)]
-numsGen = (x for x in range(10**8))
+numsCom = [x for x in range(10 ** 8)]
+numsGen = (x for x in range(10 ** 8))
 print(next(numsGen))  # 0 --> 이 때마다 동적으로 생성된다.
 print(next(numsGen))  # 1
 print(next(numsGen))  # 2
 
 # 리스트를 순회하면서 현재의 위치,value를 알고 싶다면 enumerate로 감싸서 사용하자
 a = [1, 2, 3, 4, 5]
-for idx,value in enumerate(a):
-    print('%d %d' %(idx,value))
+for idx, value in enumerate(a):
+    print('%d %d' % (idx, value))
+
+# 이터레이터를 병렬로 처리할 때, 가독성을 위해서 zip을 사용하자.
+names = ["abc", "bcde", "efrgt"]
+names_length = [len(name) for name in names]
+# max_length = 0
+# max_name = None
+# for i in range(len(names)):
+#     if max_length < names_length[i]:
+#         max_length = names_length[i]
+#         max_name = names[i]
+
+# 위처럼 인덱스로 접근을 하면 실제 코드를 읽기가 쉽지 x -> 따라서 아래처럼 zip을 이용하면 훨씬 명료하게 사용이 가능함.
+# python 3의 zip은 지연 제너레이터를 이용하므로, 메모리를 덜 낭비 하지만,python 2는 zip은 실제로 모든 값을 메모리에 올리므로, 주의해야함.
+# python 2인 경우에는 itertools의 izip을 이용하자.
+max_length = 0
+max_name = None
+for name, length in zip(names, names_length):
+    if max_length < length:
+        max_length = length
+        max_name = names
+
+# 파이썬에서는 루프 문 뒤에 else를 사용할 수 있는데 의미가 직관적이지 않으므로, 사용하지 말자.
+for i in [1, 2, 3, 4]:
+    print(i)
+else:
+    print("else")
+
+## 이 경우에는 else가 출력되지 않는다. 왜냐하면, 루프가 중간에 끊겼기 때문이다.
+for i in [1, 2, 3, 4]:
+    print(i)
+    if i == 2:
+        break
+else:
+    print("else")
+
+
+# try/except/else/finally의 의미를 명확히 이해하고, 이를 사용하는 목적에 따라서 잘 사용하자.
+def fun(str1):
+    try:
+        num = int(str1)  # 문자열을 정수로 변환
+    except ValueError as e:
+        print("변환 실패:", e)
+    else:
+        # 예외 없이 정상 실행된 경우에만 실행됨
+        print("변환 성공, 1 더하기 전:", num)
+        num += 1
+        print("1 더한 값:", num)
+    finally:
+        print("이 블록은 항상 실행됩니다.")
+
+
+fun("abc")
+fun("12")
